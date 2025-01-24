@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getTodos, createTodo, deleteTodo, toggleTodoCompletion } from './Services/todoService';
-import TodoInput from './Components/TodoInput';
-import TodoList from './Components/TodoList';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyles from './Styles/GlobalStyles'; 
+import theme from './Styles/Theme';
+import { getTodos, createTodo, deleteTodo, toggleTodoCompletion } from './Services/todoService'; 
+import TodoInput from './Components/TodoInput/TodoInput.jsx'; 
+import TodoList from './Components/TodoList/TodoList.jsx'; 
 
-function App() {
-  const [todos, setTodos] = useState([]); // Armazena as tarefas
-  const [newTodo, setNewTodo] = useState(''); // Armazena a nova tarefa digitada
+const App = () => {
+  const [todos, setTodos] = useState([]); 
+  const [newTodo, setNewTodo] = useState(''); 
 
-  // Carregar as tarefas do serviço
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -20,20 +22,19 @@ function App() {
     fetchTodos();
   }, []);
 
-  // Função para adicionar uma nova tarefa
+  
   const handleAddTodo = async () => {
     if (newTodo.trim()) {
       try {
         const addedTodo = await createTodo({ text: newTodo });
         setTodos([...todos, addedTodo]);
-        setNewTodo(''); // Limpa o campo de input após adicionar
+        setNewTodo(''); 
       } catch (error) {
         console.error('Erro ao adicionar tarefa:', error);
       }
     }
   };
 
-  // Função para deletar uma tarefa
   const handleDeleteTodo = async (id) => {
     try {
       await deleteTodo(id);
@@ -43,7 +44,6 @@ function App() {
     }
   };
 
-  // Função para alternar o status de "completado"
   const handleToggleTodo = async (id) => {
     try {
       const updatedTodo = await toggleTodoCompletion(id);
@@ -56,21 +56,24 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Todo List</h1>
-      
-      <TodoInput
-        newTodo={newTodo}
-        setNewTodo={setNewTodo}
-        handleAddTodo={handleAddTodo}
-      />
+    <ThemeProvider theme={theme}>
+      <GlobalStyles /> 
+      <div className="App">
+        <h1>Todo List</h1>
+        
+        <TodoInput
+          newTodo={newTodo}
+          setNewTodo={setNewTodo}
+          handleAddTodo={handleAddTodo}
+        />
 
-      <TodoList
-        todos={todos}
-        onDelete={handleDeleteTodo}
-        onToggleComplete={handleToggleTodo}
-      />
-    </div>
+        <TodoList
+          todos={todos}
+          onDelete={handleDeleteTodo}
+          onToggleComplete={handleToggleTodo}
+        />
+      </div>
+    </ThemeProvider>
   );
 }
 
