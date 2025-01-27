@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { InputContainer, Input, Button } from './TodoInput.styled';
 
 const TodoInput = ({ newTodo, setNewTodo, handleAddTodo }) => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleAddTodo(newTodo);
-    setNewTodo('');
-  };
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      handleAddTodo(newTodo);
+      setNewTodo('');
+    },
+    [newTodo, handleAddTodo, setNewTodo]
+  );
 
   return (
     <InputContainer>

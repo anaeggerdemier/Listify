@@ -1,17 +1,19 @@
 import { createGlobalStyle } from 'styled-components';
 
+const getThemeColor = (colorKey) => ({ theme }) => theme.colors[colorKey];
+
 const GlobalStyles = createGlobalStyle`
   *, *::before, *::after {
     box-sizing: border-box;
   }
 
-  body, html {
+  html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: ${(props) => props.theme.colors.background};
-    color: ${(props) => props.theme.colors.color};
+    font-family: ${(props) => props.theme.fonts.body};
+    background-color: ${getThemeColor('background')};
+    color: ${getThemeColor('text')};
   }
 
   #root {
@@ -31,6 +33,10 @@ const GlobalStyles = createGlobalStyle`
 
   button {
     cursor: pointer;
+    font-family: inherit;
+    background: none;
+    border: none;
+    padding: 0;
   }
 `;
 

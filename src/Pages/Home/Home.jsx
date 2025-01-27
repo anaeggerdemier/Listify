@@ -1,57 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { getTodos, createTodo } from '../services/todoService';
-import TodoItem from '../components/TodoItem';
-import TodoInput from '../components/TodoInput';
-import { TodoListContainer, EmptyMessage } from './Home.styles';
+import React from 'react';
+import TodoInput from '../../Components/TodoInput/TodoInput.jsx'; 
+import TodoList from '../../Components/TodoList/TodoList.jsx';
+import styled from 'styled-components';
 
-const Home = () => {
-  const [todos, setTodos] = useState([]);
-  const [newTodo, setNewTodo] = useState(''); 
+export const HeaderContainer = styled.header`
+  background-color: #333;
+  color: white;
+  padding: 10px;
+`;
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const todosData = await getTodos();
-        setTodos(todosData);
-      } catch (error) {
-        console.error('Erro ao carregar tarefas', error);
-      }
-    };
-    fetchTodos();
-  }, []);
+export const Title = styled.h1`
+  font-size: 24px;
+`;
 
-  const handleAddTodo = async (text) => {
-    if (text.trim()) {
-      try {
-        const addedTodo = await createTodo({ text });
-        setTodos((prevTodos) => [...prevTodos, addedTodo]);
-      } catch (error) {
-        console.error('Erro ao adicionar tarefa:', error);
-      }
-    }
-  };
-
+const Home = ({ todos, newTodo, setNewTodo, handleAddTodo, handleDeleteTodo, handleToggleTodo, handleDeleteAll }) => {
   return (
-    <div>
-      <h2>Your Tasks</h2>
-
-      <TodoInput 
+    <div className="home-page" style={{ position: 'relative', padding: '20px' }}>
+      <h1>Listify</h1>
+      <TodoInput
         newTodo={newTodo}
         setNewTodo={setNewTodo}
         handleAddTodo={handleAddTodo}
       />
+      <TodoList
+        todos={todos}
+        onDelete={handleDeleteTodo}
+        onToggleComplete={handleToggleTodo}
+      />
 
-      <TodoListContainer>
-        {todos.length === 0 ? (
-          <EmptyMessage>No tasks yet! Add some tasks to get started.</EmptyMessage>
-        ) : (
-          todos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} />
-          ))
-        )}
-      </TodoListContainer>
+      <button 
+        onClick={handleDeleteAll} 
+        style={{
+          marginTop: '20px', 
+          padding: '10px', 
+          backgroundColor: 'red', 
+          color: 'white', 
+          position: 'relative', 
+          zIndex: 10
+        }}
+      >
+        Delete All
+      </button>
     </div>
   );
-};
+}
 
 export default Home;
