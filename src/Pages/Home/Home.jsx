@@ -1,46 +1,41 @@
 import React from 'react';
-import TodoInput from '../../Components/TodoInput/TodoInput.jsx'; 
+import TodoInput from '../../Components/TodoInput/TodoInput.jsx';
 import TodoList from '../../Components/TodoList/TodoList.jsx';
-import styled from 'styled-components';
+import { HeaderContainer, Title, DeleteAllButtonContainer } from './Home.styled.js';
+import Button from '../../Components/Button/Button.jsx';
 
-export const HeaderContainer = styled.header`
-  background-color: #333;
-  color: white;
-  padding: 10px;
-`;
-
-export const Title = styled.h1`
-  font-size: 24px;
-`;
-
-const Home = ({ todos, newTodo, setNewTodo, handleAddTodo, handleDeleteTodo, handleToggleTodo, handleDeleteAll }) => {
+const Home = ({
+  todos,
+  newTodo,
+  setNewTodo,
+  handleAddTodo,
+  handleDeleteTodo,
+  handleToggleTodo,
+  handleDeleteAll,
+}) => {
   return (
-    <div className="home-page" style={{ position: 'relative', padding: '20px' }}>
-      <h1>Listify</h1>
+    <div className="home-page">
+      <HeaderContainer>
+        <Title>Organize, prioritize, and achieve your goals with ease, while music accompanies you every step of the way</Title>
+      </HeaderContainer>
+      
       <TodoInput
         newTodo={newTodo}
         setNewTodo={setNewTodo}
         handleAddTodo={handleAddTodo}
       />
+      
       <TodoList
         todos={todos}
         onDelete={handleDeleteTodo}
         onToggleComplete={handleToggleTodo}
       />
-
-      <button 
-        onClick={handleDeleteAll} 
-        style={{
-          marginTop: '20px', 
-          padding: '10px', 
-          backgroundColor: 'red', 
-          color: 'white', 
-          position: 'relative', 
-          zIndex: 10
-        }}
-      >
-        Delete All
-      </button>
+      
+      <DeleteAllButtonContainer>
+        <Button primary onClick={handleDeleteAll}>
+          Delete All
+        </Button>
+      </DeleteAllButtonContainer>
     </div>
   );
 }
