@@ -1,4 +1,4 @@
-# Listify - Organize, Prioritize, and Achieve Your Goals with Ease 🎯🎶
+# Listify - Organize, Prioritize, and Achieve Your Goals with Ease 🎯🎧
 
 Listify is a task management app that helps you organize, prioritize, and achieve your goals with ease, all while keeping you motivated with music. It's a work in progress, continuously evolving to offer a better experience.
 
