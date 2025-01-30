@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
-import { FormContainer, Button, ErrorMessage } from "./Login.styled";
+import { FormContainer, ErrorMessage } from "./Login.styled";
+import Button from "../../Components/Button/Button";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -51,7 +52,9 @@ const Login = () => {
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <Button type="submit">Login</Button>
+        <div style={{ textAlign: "center" }}>
+          <Button type="submit" primary>Register</Button>
+        </div>
       </form>
     </FormContainer>
   );

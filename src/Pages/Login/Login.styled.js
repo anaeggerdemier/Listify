@@ -43,27 +43,6 @@ export const Input = styled.input`
   }
 `;
 
-export const Button = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-
-  &:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-  }
-
-  &:active {
-    background-color: #388e3c;
-  }
-`;
-
 export const ErrorMessage = styled.p`
   color: #f44336;
   font-size: 14px;
