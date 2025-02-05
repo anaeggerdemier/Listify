@@ -3,16 +3,19 @@ import TodoInput from '../../Components/TodoInput/TodoInput.jsx';
 import TodoList from '../../Components/TodoList/TodoList.jsx';
 import { HeaderContainer, Title, DeleteAllButtonContainer } from './Home.styled.js';
 import Button from '../../Components/Button/Button.jsx';
+import useTodoState from '../../Hooks/useTodoState.js';
 
-const Home = ({
-  todos,
-  newTodo,
-  setNewTodo,
-  handleAddTodo,
-  handleDeleteTodo,
-  handleToggleTodo,
-  handleDeleteAll,
-}) => {
+const Home = () => {
+  const {
+    todos,
+    newTodo,
+    setNewTodo,
+    handleAddTodo,
+    handleDeleteTodo,
+    handleToggleTodo,
+    handleDeleteAll,
+  } = useTodoState();
+
   return (
     <div className="home-page">
       <HeaderContainer>
@@ -38,6 +41,6 @@ const Home = ({
       </DeleteAllButtonContainer>
     </div>
   );
-}
+};
 
 export default Home;
