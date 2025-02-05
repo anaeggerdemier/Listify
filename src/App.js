@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from './Styles/GlobalStyles'; 
@@ -9,72 +9,81 @@ import Login from './Pages/Login/Login.jsx';
 import Register from './Pages/Register/Register.jsx';  
 import Header from './Components/Header/Header.jsx'; 
 
-const App = () => {
-  const [todos, setTodos] = useState([]); 
-  const [newTodo, setNewTodo] = useState(''); 
+const useTodos = () => {
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const todosData = await getTodos();
-        console.log(todosData);
-        setTodos(todosData);
-      } catch (error) {
-        console.error('Erro ao buscar tarefas:', error);
-      }
-    };
-    fetchTodos();
-  }, []);
-  
-
-  const uniqueTodos = todos.filter((value, index, self) =>
-    index === self.findIndex((t) => t.id === value.id)
-  );
-
-  const handleAddTodo = async () => {
-    if (newTodo.trim()) {
-      const isDuplicate = todos.some(todo => todo.text === newTodo);
-      if (isDuplicate) {
-        console.log('Tarefa duplicada!');
-        return;
-      }
-  
-      try {
-        const addedTodo = await createTodo({ text: newTodo });
-        setTodos([...todos, addedTodo]);
-        setNewTodo(''); 
-      } catch (error) {
-        console.error('Erro ao adicionar tarefa:', error);
-      }
+  const fetchTodos = useCallback(async () => {
+    setLoading(true);
+    try {
+      const todosData = await getTodos();
+      setTodos(todosData);
+    } catch (error) {
+      console.error('Erro ao buscar tarefas:', error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const handleDeleteTodo = async (id) => {
+  const addTodo = useCallback(async (newTodo) => {
+    try {
+      const addedTodo = await createTodo({ text: newTodo });
+      setTodos(prevTodos => [...prevTodos, addedTodo]);
+    } catch (error) {
+      console.error('Erro ao adicionar tarefa:', error);
+    }
+  }, []);
+
+  const deleteTodoById = useCallback(async (id) => {
     try {
       await deleteTodo(id);
-      setTodos(todos.filter((todo) => todo.id !== id));
+      setTodos(prevTodos => prevTodos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error('Erro ao deletar tarefa:', error);
     }
-  };
+  }, []);
 
-  const handleToggleTodo = async (id) => {
+  const toggleTodoById = useCallback(async (id) => {
     try {
       const updatedTodo = await toggleTodoCompletion(id);
-      setTodos(todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: updatedTodo.completed } : todo
-      ));
+      setTodos(prevTodos =>
+        prevTodos.map(todo =>
+          todo.id === id ? { ...todo, completed: updatedTodo.completed } : todo
+        )
+      );
     } catch (error) {
       console.error('Erro ao atualizar tarefa:', error);
     }
-  };
+  }, []);
 
-  const handleDeleteAll = async () => {
+  const deleteAllTodos = useCallback(async () => {
     try {
       await Promise.all(todos.map(todo => deleteTodo(todo.id)));
       setTodos([]);
     } catch (error) {
       console.error('Erro ao deletar todas as tarefas:', error);
+    }
+  }, [todos]);
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  return { todos, loading, addTodo, deleteTodoById, toggleTodoById, deleteAllTodos };
+};
+
+const App = () => {
+  const [newTodo, setNewTodo] = useState('');
+  const { todos, loading, addTodo, deleteTodoById, toggleTodoById, deleteAllTodos } = useTodos();
+
+  const uniqueTodos = todos.filter((value, index, self) =>
+    index === self.findIndex((t) => t.id === value.id)
+  );
+
+  const handleAddTodo = () => {
+    if (newTodo.trim()) {
+      addTodo(newTodo);
+      setNewTodo('');
     }
   };
 
@@ -89,9 +98,10 @@ const App = () => {
                                     newTodo={newTodo} 
                                     setNewTodo={setNewTodo} 
                                     handleAddTodo={handleAddTodo} 
-                                    handleDeleteTodo={handleDeleteTodo} 
-                                    handleToggleTodo={handleToggleTodo} 
-                                    handleDeleteAll={handleDeleteAll}
+                                    handleDeleteTodo={deleteTodoById} 
+                                    handleToggleTodo={toggleTodoById} 
+                                    handleDeleteAll={deleteAllTodos}
+                                    loading={loading}
                                     />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -99,6 +109,6 @@ const App = () => {
       </Router>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

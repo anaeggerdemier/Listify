@@ -7,11 +7,15 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html, body {
+  html {
+    min-height: 100%;
+  }
+
+  body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: ${(props) => props.theme.fonts.body};
+    font-family: ${(props) => props.theme.fonts.body}, 'Helvetica', sans-serif;
     background-color: ${getThemeColor('background')};
     color: ${getThemeColor('text')};
   }
@@ -31,7 +35,12 @@ const GlobalStyles = createGlobalStyle`
     color: inherit;
   }
 
+  a:focus {
+    outline: 2px solid ${(props) => props.theme.colors.primary};
+  }
+
   button {
+    margin: 0;
     cursor: pointer;
     font-family: inherit;
     background: none;
