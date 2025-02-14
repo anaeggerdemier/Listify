@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TodoInput from '../../Components/TodoInput/TodoInput.jsx';
 import TodoList from '../../Components/TodoList/TodoList.jsx';
 import { HeaderContainer, Title, DeleteAllButtonContainer } from './Home.styled.js';
@@ -16,10 +16,23 @@ const Home = () => {
     handleDeleteAll,
   } = useTodoState();
 
+  const [isDeleteAllConfirmed, setIsDeleteAllConfirmed] = useState(false);
+
+  const handleDeleteAllConfirm = () => {
+    if (todos.length > 0) {
+      if (!isDeleteAllConfirmed) {
+        setIsDeleteAllConfirmed(true);
+        return;
+      }
+      handleDeleteAll();
+      setIsDeleteAllConfirmed(false);
+    }
+  };
+
   return (
-    <div className="home-page">
+    <div>
       <HeaderContainer>
-        <Title>Organize, prioritize, and achieve your goals with ease, while music accompanies you every step of the way</Title>
+        <Title>Organize and achieve your goals, with music as your guide</Title>
       </HeaderContainer>
       
       <TodoInput
@@ -34,11 +47,17 @@ const Home = () => {
         onToggleComplete={handleToggleTodo}
       />
       
-      <DeleteAllButtonContainer>
-        <Button primary onClick={handleDeleteAll}>
-          Delete All
-        </Button>
-      </DeleteAllButtonContainer>
+      {todos.length > 0 && (
+        <DeleteAllButtonContainer>
+          <Button 
+            primary 
+            onClick={handleDeleteAllConfirm} 
+            aria-label="Delete all tasks"
+          >
+            {isDeleteAllConfirmed ? 'Are you sure?' : 'Delete All'}
+          </Button>
+        </DeleteAllButtonContainer>
+      )}
     </div>
   );
 };
